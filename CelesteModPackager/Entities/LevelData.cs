@@ -1,4 +1,5 @@
 ﻿using CelesteEditor;
+using CelesteModPackager.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,10 +9,36 @@ using System.Text;
 namespace CelesteModPackager.Entities
 {
     [Serializable]
-    public class LevelData
+    public class LevelData : PropertyOwner
     {
+        private string _previewImagePath;
+        private string _levelName;
+
         public string FilePath { get; private set; }
-        public string LevelName { get; set; }
+        public string LevelName
+        {
+            get => _levelName; 
+            set
+            {
+                if ( value != _levelName )
+                {
+                    _levelName = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+        public string PreviewImagePath
+        {
+            get => _previewImagePath;
+            set
+            {
+                if ( value != _previewImagePath )
+                {
+                    _previewImagePath = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
         public ObservableCollection<Checkpoint> Checkpoints { get; private set; } = new ObservableCollection<Checkpoint>();
 
         public LevelData( string filePath )

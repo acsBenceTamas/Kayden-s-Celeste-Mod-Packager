@@ -106,6 +106,7 @@ namespace CelesteModPackager.ViewModels
         public ICommand LoadProjectCommand { get; set; }
         public ICommand ExportEnglishTxtCommand { get; set; }
         public ICommand BrowseDLLCommand { get; set; }
+        public ICommand SelectLevelPreviewImageCommand { get; set; }
 
         public MainWindowViewModel( MainWindow mainWindow )
         {
@@ -122,6 +123,7 @@ namespace CelesteModPackager.ViewModels
             ImportProjectCommand = new RelayCommand( o => ImportProject_Execute() );
             ExportEnglishTxtCommand = new RelayCommand( o => ExportEnglishTxt_Execute(), o => Project.CreateEnglishTxt );
             BrowseDLLCommand = new RelayCommand( o => BrowseDLL_Execute(), o => Project.IsCodeMod );
+            SelectLevelPreviewImageCommand = new RelayCommand( o => SelectLevelPreviewImage_Execute() );
             Project.PropertyChanged += ( o, e ) => { 
                 if ( e.PropertyName == "CreateEnglishTxt" )
                 {
@@ -449,6 +451,18 @@ namespace CelesteModPackager.ViewModels
             if ( saveFileDialog.ShowDialog() == true )
             {
                 ExportEnglishTxt( saveFileDialog.FileName );
+            }
+        }
+
+        private void SelectLevelPreviewImage_Execute()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "Portable Network Graphics *.png|*.png"
+            };
+            if ( openFileDialog.ShowDialog() == true )
+            {
+                SelectedMap.PreviewImagePath = openFileDialog.FileName;
             }
         }
     }

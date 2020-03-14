@@ -3,9 +3,29 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:converters="clr-namespace:CelesteModPackager.Converters"
         xmlns:local="clr-namespace:CelesteModPackager"
         mc:Ignorable="d"
         Title="{Binding Path=CustomTitle}" MinWidth="1000" MinHeight="600">
+    <Window.Resources>
+        <converters:CheckpointConverter x:Key="checkpointConverter" />
+        <DataTemplate x:Key="CheckpointTemplate" DataType="{x:Type ListViewItem}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="{Binding Path=Checkpoint.RoomName}"/>
+                <TextBox Grid.Column="1" Text="{Binding Path=Checkpoint.CheckpointName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=Checkpoint.PicturePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False"/>
+                <Button Margin="2" Grid.Row="1" Grid.Column="0" Command="{Binding SelectPreviewImageCommand}">Preview Image</Button>
+            </Grid>
+        </DataTemplate>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
@@ -115,7 +135,11 @@
                                     <TextBlock Height="20" Width="100" Text="Level Name "/>
                                     <TextBox Text="{Binding SelectedMap.LevelName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
                                 </StackPanel>
-                                <ListView ItemsSource="{Binding SelectedMap.Checkpoints}" HorizontalContentAlignment="Stretch">
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Margin="2" Grid.Row="1" Grid.Column="0" Command="{Binding SelectLevelPreviewImageCommand}">Preview Image</Button>
+                                    <TextBox Text="{Binding SelectedMap.PreviewImagePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False"/>
+                                </StackPanel>
+                                <ListView ItemsSource="{Binding Path=SelectedMap.Checkpoints}" HorizontalContentAlignment="Stretch">
                                     <ListView.ItemContainerStyle>
                                         <Style TargetType="{x:Type ListViewItem}">
                                             <Setter Property="Background" Value="Transparent" />
@@ -130,14 +154,8 @@
                                     </ListView.ItemContainerStyle>
                                     <ListView.ItemTemplate>
                                         <DataTemplate>
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="1*"/>
-                                                    <ColumnDefinition Width="3*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <TextBlock Grid.Column="0" Text="{Binding Path=RoomName}"/>
-                                                <TextBox Grid.Column="1" Text="{Binding Path=CheckpointName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                            </Grid>
+                                            <ContentPresenter Content="{Binding Converter={StaticResource checkpointConverter}}"
+                                                              ContentTemplate="{StaticResource CheckpointTemplate}"/>
                                         </DataTemplate>
                                     </ListView.ItemTemplate>
                                 </ListView>
