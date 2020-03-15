@@ -45,6 +45,7 @@ namespace CelesteModPackager.ViewModels
             set
             {
                 _project = value;
+                _project.Version = _version;
                 HasUnsavedChanges = false;
                 NotifyPropertyChanged();
                 NotifyPropertyChanged( "CustomTitle" );

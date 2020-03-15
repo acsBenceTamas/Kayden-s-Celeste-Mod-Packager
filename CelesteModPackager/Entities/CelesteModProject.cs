@@ -13,10 +13,7 @@ namespace CelesteModPackager.Entities
         private string _campaignName = "Unknown Campaign";
         private bool _createPreviewImages = false;
 
-        /// <summary>
-        /// Version Number. Important to keep up to date with new releases to avoid project type clashes.
-        /// </summary>
-        public VersionNumber Version { get; set; } = new VersionNumber( 1, 0, 0 );
+        public VersionNumber Version { get; set; }
         public EverestMetadata EverestMetadata { get; private set; }
         public string ProjectName
         {
