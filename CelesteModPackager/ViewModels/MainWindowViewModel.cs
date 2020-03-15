@@ -45,6 +45,17 @@ namespace CelesteModPackager.ViewModels
                 NotifyPropertyChanged();
                 NotifyPropertyChanged( "CustomTitle" );
                 NotifyPropertyChanged( "CheckpointSetupVisibility" );
+                NotifyPropertyChanged( "EnglishTxtSetupVisibility" );
+                _project.PropertyChanged += ( o, e ) => {
+                    if ( e.PropertyName == "CreateEnglishTxt" )
+                    {
+                        NotifyPropertyChanged( "EnglishTxtSetupVisibility" );
+                    }
+                    else if ( e.PropertyName == "CreatePreviewImages" )
+                    {
+                        NotifyPropertyChanged( "PreviewImageSetupVisibility" );
+                    }
+                };
             }
         }
         public ProjectMetadata NewDependency { get; set; } = new ProjectMetadata( "NewDependency", new VersionNumber( 0, 0, 0 ) );
@@ -95,6 +106,14 @@ namespace CelesteModPackager.ViewModels
             }
         }
 
+        public Visibility PreviewImageSetupVisibility
+        {
+            get
+            {
+                return ( Project.CreatePreviewImages ) ? Visibility.Visible : Visibility.Hidden;
+            }
+        }
+
         public ICommand AddMapFilesCommand { get; set; }
         public ICommand RemoveMapFilesCommand { get; set; }
         public ICommand AddDependencyCommand { get; set; }
@@ -107,6 +126,7 @@ namespace CelesteModPackager.ViewModels
         public ICommand ExportEnglishTxtCommand { get; set; }
         public ICommand BrowseDLLCommand { get; set; }
         public ICommand SelectLevelPreviewImageCommand { get; set; }
+        public ICommand ImportDependencyCommand { get; set; }
 
         public MainWindowViewModel( MainWindow mainWindow )
         {
@@ -124,12 +144,7 @@ namespace CelesteModPackager.ViewModels
             ExportEnglishTxtCommand = new RelayCommand( o => ExportEnglishTxt_Execute(), o => Project.CreateEnglishTxt );
             BrowseDLLCommand = new RelayCommand( o => BrowseDLL_Execute(), o => Project.IsCodeMod );
             SelectLevelPreviewImageCommand = new RelayCommand( o => SelectLevelPreviewImage_Execute() );
-            Project.PropertyChanged += ( o, e ) => { 
-                if ( e.PropertyName == "CreateEnglishTxt" )
-                {
-                    NotifyPropertyChanged( "EnglishTxtSetupVisibility" );
-                }
-            };
+            ImportDependencyCommand = new RelayCommand( o => ImportDependency_Execute() );
         }
 
         public void AddMapFiles_Execute()
@@ -252,15 +267,23 @@ namespace CelesteModPackager.ViewModels
 
         private void PackageProject_Execute()
         {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = $"Celeste Mod Project *.{_projectExtension}|*.{_projectExtension}";
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Filter = $"Celeste Mod Project *.{_projectExtension}|*.{_projectExtension}"
+            };
             if ( saveFileDialog.ShowDialog() == true )
             {
+                SaveProjectToFile( saveFileDialog.FileName );
                 string root = Path.GetDirectoryName( saveFileDialog.FileName );
 
                 if ( Project.CreateEnglishTxt )
                 {
                     ExportEnglishTxt( Path.Combine( root, @"Dialog/English.txt" ) );
+                }
+
+                if ( Project.CreatePreviewImages )
+                {
+                    PackageCheckpointImages( root );
                 }
 
                 ISerializer serializer = new SerializerBuilder()
@@ -293,6 +316,49 @@ namespace CelesteModPackager.ViewModels
 
                 HasUnsavedChanges = false;
             }
+        }
+
+        private void PackageCheckpointImages( string root )
+        {
+            foreach ( LevelData level in Project.SelectedLevels )
+            {
+                string levelName = Path.GetFileNameWithoutExtension( level.FilePath );
+                string destinationFolder = Path.Combine( root, "Graphics/Atlases/Checkpoints", Project.UserName, Project.ProjectName, levelName, level.Side.ToString() );
+                if ( level.PreviewImagePath != null && level.PreviewImagePath != string.Empty )
+                {
+
+                    FileInfo file = new FileInfo( level.PreviewImagePath );
+
+                    if ( file.Exists )
+                    {
+                        CopyPicture( destinationFolder, file, "start.png" );
+                    }
+                }
+                foreach ( Checkpoint checkpoint in level.Checkpoints )
+                {
+                    if ( checkpoint.PicturePath == string.Empty ) continue;
+
+                    FileInfo file = new FileInfo( checkpoint.PicturePath );
+
+                    if ( !file.Exists ) continue;
+
+                    CopyPicture( destinationFolder, file, checkpoint.RoomName + ".png" );
+                }
+            }
+        }
+
+        private static void CopyPicture( string destinationFolder, FileInfo file, string destinationFileName )
+        {
+            string destinationName = Path.Combine( destinationFolder, destinationFileName );
+
+            DirectoryInfo directory = new DirectoryInfo( destinationFolder );
+            if ( !directory.Exists )
+            {
+                directory.Create();
+            }
+
+            File.Delete( destinationName );
+            file.CopyTo( destinationName );
         }
 
         private void CopySelectedMaps( string targetDir )
@@ -424,6 +490,7 @@ namespace CelesteModPackager.ViewModels
                 {
                     stringBuilder.Append( $"\n\t{levelID}_{checkpoint.RoomName.Replace( '-', '_' ).Replace( ' ', '_' )}={checkpoint.CheckpointName}" );
                 }
+                stringBuilder.Append( $"\n\tPOEM_{levelID}_{level.Side}={level.Poem}" );
                 stringBuilder.Append( '\n' );
             }
 
@@ -463,6 +530,39 @@ namespace CelesteModPackager.ViewModels
             if ( openFileDialog.ShowDialog() == true )
             {
                 SelectedMap.PreviewImagePath = openFileDialog.FileName;
+            }
+        }
+
+        private void ImportDependency_Execute()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "Everest YAML everest.yaml|everest.yaml"
+            };
+            if (openFileDialog.ShowDialog() == true )
+            {
+                FileInfo fileInfo = new FileInfo( openFileDialog.FileName );
+
+                IDeserializer deserializer = new DeserializerBuilder().Build();
+                string yaml;
+                using ( StreamReader streamReader = new StreamReader( fileInfo.OpenRead() ) )
+                {
+                    yaml = streamReader.ReadToEnd();
+                }
+                EverestMetadata[] data = null;
+                try
+                {
+                    data = deserializer.Deserialize<EverestMetadata[]>( yaml );
+                }
+                catch ( Exception e )
+                {
+
+                }
+
+                foreach ( EverestMetadata metadata in data )
+                {
+                    Project.AddDependency( new ProjectMetadata( metadata.Name, metadata.Version ) );
+                }
             }
         }
     }

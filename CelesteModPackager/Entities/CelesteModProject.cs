@@ -11,6 +11,7 @@ namespace CelesteModPackager.Entities
         private bool _isCodeMod = false;
         private bool _createEnglishTxt = false;
         private string _campaignName = "Unknown Campaign";
+        private bool _createPreviewImages = false;
 
         public EverestMetadata EverestMetadata { get; private set; }
         public string ProjectName
@@ -40,12 +41,24 @@ namespace CelesteModPackager.Entities
         }
         public bool CreateEnglishTxt
         {
-            get => _createEnglishTxt; 
+            get => _createEnglishTxt;
             set
             {
                 if ( _createEnglishTxt != value )
                 {
                     _createEnglishTxt = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+        public bool CreatePreviewImages
+        {
+            get => _createPreviewImages;
+            set
+            {
+                if ( _createPreviewImages != value )
+                {
+                    _createPreviewImages = value;
                     NotifyPropertyChanged();
                 }
             }
@@ -68,7 +81,7 @@ namespace CelesteModPackager.Entities
         public ObservableCollection<LevelData> SelectedLevels { get; private set; } = new ObservableCollection<LevelData>();
         public string CampaignName
         {
-            get => _campaignName; 
+            get => _campaignName;
             set
             {
                 value = HelperFunctions.MakeValidValueName( value );

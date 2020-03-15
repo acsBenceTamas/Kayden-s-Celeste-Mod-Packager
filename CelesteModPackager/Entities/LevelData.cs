@@ -11,18 +11,34 @@ namespace CelesteModPackager.Entities
     [Serializable]
     public class LevelData : PropertyOwner
     {
-        private string _previewImagePath;
-        private string _levelName;
+        private string _previewImagePath = string.Empty;
+        private string _levelName = string.Empty;
+        private string _poem = string.Empty;
+        private char _side;
 
         public string FilePath { get; private set; }
+        public string AreaName { get; set; }
+        public char Side { get => _side; set => _side = value; }
         public string LevelName
         {
-            get => _levelName; 
+            get => _levelName;
             set
             {
                 if ( value != _levelName )
                 {
                     _levelName = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+        public string Poem
+        {
+            get => _poem;
+            set
+            {
+                if ( value != _poem )
+                {
+                    _poem = value;
                     NotifyPropertyChanged();
                 }
             }
@@ -47,6 +63,7 @@ namespace CelesteModPackager.Entities
             MapElement mapElement = MapCoder.FromBinary( filePath );
             GatherCheckpoints( mapElement );
             LevelName = Path.GetFileNameWithoutExtension( filePath );
+            HelperFunctions.ParseSide( filePath, out _side );
         }
 
         private void GatherCheckpoints( MapElement rootElement )
