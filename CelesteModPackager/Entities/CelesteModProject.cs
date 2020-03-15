@@ -101,7 +101,7 @@ namespace CelesteModPackager.Entities
         public CelesteModProject( EverestMetadata everestMetadata )
         {
             EverestMetadata = everestMetadata;
-            IsCodeMod = everestMetadata.DLL != string.Empty && everestMetadata.DLL != null;
+            IsCodeMod = everestMetadata.GlobalDLL != string.Empty && everestMetadata.GlobalDLL != null;
         }
 
         public void AddDependency( string dependency, VersionNumber version )

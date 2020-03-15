@@ -313,6 +313,16 @@ namespace CelesteModPackager.ViewModels
                 }
 
                 CopySelectedMaps( root );
+                if ( Project.IsCodeMod )
+                {
+                    FileInfo DLL = new FileInfo( Project.EverestMetadata.GlobalDLL );
+                    if ( DLL.Exists )
+                    {
+                        string newPath = Path.Combine( root, Path.GetFileName( DLL.Name ) );
+                        File.Delete( newPath );
+                        DLL.CopyTo( newPath );
+                    }
+                }
 
                 HasUnsavedChanges = false;
             }
@@ -383,7 +393,7 @@ namespace CelesteModPackager.ViewModels
 
         private bool PackageProject_CanExecute()
         {
-            bool properCodeModCheck = !Project.IsCodeMod || ( Project.EverestMetadata.DLL != null && Project.EverestMetadata.DLL != string.Empty );
+            bool properCodeModCheck = !Project.IsCodeMod || ( Project.EverestMetadata.GlobalDLL != null && Project.EverestMetadata.GlobalDLL != string.Empty );
             bool properLevelModCheck = Project.IsCodeMod || Project.UserName != string.Empty && Project.SelectedLevels.Count > 0;
             return Project.ProjectName != string.Empty && properCodeModCheck && properLevelModCheck;
         }
@@ -396,7 +406,7 @@ namespace CelesteModPackager.ViewModels
             };
             if ( openFileDialog.ShowDialog() == true )
             {
-                Project.EverestMetadata.DLL = openFileDialog.FileName;
+                Project.EverestMetadata.GlobalDLL = openFileDialog.FileName;
             }
         }
 

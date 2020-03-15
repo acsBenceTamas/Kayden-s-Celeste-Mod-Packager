@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Text;
 using YamlDotNet.Serialization;
 
@@ -16,8 +17,8 @@ namespace CelesteModPackager.Entities
         public string Name { get => ProjectMetadata.Name; set => ProjectMetadata.Name = value; }
         [YamlMember( Order = 2 )]
         public string Version { get => ProjectMetadata.Version.VersionText; set => ProjectMetadata.Version = new VersionNumber( value ); }
-        [YamlMember( Order = 3 )]
-        public string DLL
+        [YamlIgnore]
+        public string GlobalDLL
         {
             get => _DLL; set
             {
@@ -27,6 +28,12 @@ namespace CelesteModPackager.Entities
                     NotifyPropertyChanged();
                 }
             }
+        }
+        [YamlMember( Order = 3 )]
+        public string DLL
+        {
+            get => Path.GetFileName( GlobalDLL );
+            set => _DLL = value;
         }
         [YamlIgnore]
         public ProjectMetadata ProjectMetadata { get; set; }
