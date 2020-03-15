@@ -94,6 +94,25 @@ namespace CelesteModPackager.Entities
             return VersionText;
         }
 
+        public override bool Equals( object obj )
+        {
+            if ( !( obj is VersionNumber ) ) return false;
+            VersionNumber other = obj as VersionNumber;
+            return other.Major == Major && other.Minor == Minor && other.Build == Build;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 17;
+                hash = hash * 23 + Major.GetHashCode();
+                hash = hash * 23 + Minor.GetHashCode();
+                hash = hash * 23 + Build.GetHashCode();
+                return hash;
+            }
+        }
+
         public static explicit operator VersionNumber( string source )
         {
             return new VersionNumber( source );

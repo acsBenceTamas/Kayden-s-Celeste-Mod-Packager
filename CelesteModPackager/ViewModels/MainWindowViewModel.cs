@@ -21,6 +21,10 @@ namespace CelesteModPackager.ViewModels
         private readonly MainWindow View;
         private CelesteModProject _project;
         private LevelData _selectedMap;
+        /// <summary>
+        /// Version Number. Important to keep up to date to avoid project file incompatibility.
+        /// </summary>
+        private VersionNumber _version = new VersionNumber( 1, 0, 0 );
 
         private bool HasUnsavedChanges
         {
@@ -244,7 +248,15 @@ namespace CelesteModPackager.ViewModels
                 IFormatter formatter = new BinaryFormatter();
                 using ( FileStream stream = file.OpenRead() )
                 {
-                    Project = formatter.Deserialize( stream ) as CelesteModProject;
+                    CelesteModProject tempProject = formatter.Deserialize( stream ) as CelesteModProject;
+                    if ( Project.Version != null && Project.Version.Equals( _version ) )
+                    {
+                        Project = tempProject;
+                    }
+                    else
+                    {
+                        MessageBox.Show( $"Version mismatch! Project file version: {Project.Version}, Packager version: {_version}" );
+                    }
                 }
                 HasUnsavedChanges = false;
             }
@@ -333,7 +345,7 @@ namespace CelesteModPackager.ViewModels
             foreach ( LevelData level in Project.SelectedLevels )
             {
                 string levelName = Path.GetFileNameWithoutExtension( level.FilePath );
-                string destinationFolder = Path.Combine( root, "Graphics/Atlases/Checkpoints", Project.UserName, Project.ProjectName, levelName, level.Side.ToString() );
+                string destinationFolder = Path.Combine( root, "Graphics\\Atlases\\Checkpoints", Project.UserName, Project.ProjectName, levelName, level.Side.ToString() );
                 if ( level.PreviewImagePath != null && level.PreviewImagePath != string.Empty )
                 {
 
