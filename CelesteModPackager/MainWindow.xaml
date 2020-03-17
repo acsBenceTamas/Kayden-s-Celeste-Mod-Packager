@@ -19,13 +19,16 @@
                     <ColumnDefinition Width="100"/>
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{Binding Path=Checkpoint.RoomName}"/>
+                <TextBlock Grid.Column="0" Text="{Binding Path=Checkpoint.RoomName}" ToolTip="Name of the room of this checkpoint"/>
                 <TextBox Grid.Column="1" Text="{Binding Path=Checkpoint.CheckpointName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                         Visibility="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.EnglishTxtSetupVisibility}"/>
-                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=Checkpoint.PicturePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False" 
-                         Visibility="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.PreviewImageSetupVisibility}"/>
+                         Visibility="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.EnglishTxtSetupVisibility}"
+                         ToolTip="Name of this checkpoint in the dialog file"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=Checkpoint.PicturePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                         Visibility="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.PreviewImageSetupVisibility}"
+                         ToolTip="Path to the picture used for this checkpoint"/>
                 <Button Margin="2" Grid.Row="1" Grid.Column="0" Command="{Binding SelectPreviewImageCommand}" 
-                        Visibility="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.PreviewImageSetupVisibility}">
+                        Visibility="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.PreviewImageSetupVisibility}"
+                        ToolTip="Select a picture to be used as a preview image for this checkpoint">
                     Preview Image
                 </Button>
             </Grid>
@@ -38,11 +41,11 @@
         </Grid.RowDefinitions>
         
         <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <Button Margin="2" Command="{Binding CreateNewProjectCommand}">New</Button>
-            <Button Margin="2" Command="{Binding SaveProjectCommand}">Save</Button>
-            <Button Margin="2" Command="{Binding LoadProjectCommand}">Load</Button>
-            <Button Margin="2" Command="{Binding ExportEnglishTxtCommand}">Export Dialog</Button>
-            <Button Margin="2" Command="{Binding PackageProjectCommand}">Package</Button>
+            <Button Margin="2" Command="{Binding CreateNewProjectCommand}" ToolTip="Create a brand new, empty project">New</Button>
+            <Button Margin="2" Command="{Binding SaveProjectCommand}" ToolTip="Save the current project as a project file you can load later">Save</Button>
+            <Button Margin="2" Command="{Binding LoadProjectCommand}" ToolTip="Load a previously saved project file">Load</Button>
+            <Button Margin="2" Command="{Binding ExportEnglishTxtCommand}" ToolTip="Export dialog to a txt. Useful for creating localizations for example">Export Dialog</Button>
+            <Button Margin="2" Command="{Binding PackageProjectCommand}" ToolTip="Package the project and create a project file in the selected folder">Package</Button>
         </StackPanel>
         
         <Grid Grid.Row="1">
@@ -61,21 +64,21 @@
                 <DockPanel Grid.Row="0">
                     <TextBlock VerticalAlignment="Center">Selected Map Files:</TextBlock>
                     <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                        <Button Width="15" Height="15" FontSize="8" Margin="2,0" VerticalContentAlignment="Center" Command="{Binding AddMapFilesCommand}">+</Button>
-                        <Button Width="15" Height="15" FontSize="8" Margin="2,0" VerticalContentAlignment="Center" Command="{Binding RemoveMapFilesCommand}">-</Button>
+                        <Button Margin="3" Padding="3" VerticalContentAlignment="Center" Command="{Binding AddMapFilesCommand}" ToolTip="Add map files to the project">Add</Button>
+                        <Button Margin="3" Padding="3" VerticalContentAlignment="Center" Command="{Binding RemoveMapFilesCommand}" ToolTip="Remove selected map file from the project">Remove</Button>
                     </StackPanel>
                 </DockPanel>
                 <ListBox ItemsSource="{Binding Path=Project.SelectedLevels}" SelectedItem="{Binding Path=SelectedMap, Mode=TwoWay}" DisplayMemberPath="FilePath" Grid.Row="1" Name="selectedMapsListView"/>
                 <DockPanel Grid.Row="2">
                     <TextBlock VerticalAlignment="Center">Dependencies:</TextBlock>
                     <StackPanel Margin="4" HorizontalAlignment="Right" Orientation="Horizontal">
-                        <Button Command="{Binding ImportDependencyCommand}">Import</Button>
-                        <TextBox Text="{Binding Path=NewDependency.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="2,2" Width="150" VerticalContentAlignment="Center"/>
-                        <TextBox Text="{Binding Path=NewDependency.Version.Major, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="2,2" Width="30" VerticalContentAlignment="Center" HorizontalContentAlignment="Right"/>
-                        <TextBox Text="{Binding Path=NewDependency.Version.Minor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="2,2" Width="60" VerticalContentAlignment="Center" HorizontalContentAlignment="Right"/>
-                        <TextBox Text="{Binding Path=NewDependency.Version.Build, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="2,2" Width="60" VerticalContentAlignment="Center" HorizontalContentAlignment="Right"/>
-                        <Button Width="15" Height="15" FontSize="8" Margin="2,0" VerticalContentAlignment="Center" Command="{Binding AddDependencyCommand}">+</Button>
-                        <Button Width="15" Height="15" FontSize="8" Margin="2,0" VerticalContentAlignment="Center" Command="{Binding RemoveDependenciesCommand}">-</Button>
+                        <Button Command="{Binding ImportDependencyCommand}" ToolTip="Select the everest.yaml of a mod to add it as a dependency">Import</Button>
+                        <TextBox Text="{Binding Path=NewDependency.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="2,2" Width="150" VerticalContentAlignment="Center" ToolTip="Name of the dependency"/>
+                        <TextBox Text="{Binding Path=NewDependency.Version.Major, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="2,2" Width="30" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" ToolTip="Major version of the dependency"/>
+                        <TextBox Text="{Binding Path=NewDependency.Version.Minor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="2,2" Width="60" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" ToolTip="Minor version of the dependency"/>
+                        <TextBox Text="{Binding Path=NewDependency.Version.Build, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="2,2" Width="60" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" ToolTip="Build version of the dependency"/>
+                        <Button Width="15" Height="15" FontSize="8" Margin="2,0" VerticalContentAlignment="Center" Command="{Binding AddDependencyCommand}" ToolTip="Add the defined dependency">+</Button>
+                        <Button Width="15" Height="15" FontSize="8" Margin="2,0" VerticalContentAlignment="Center" Command="{Binding RemoveDependenciesCommand}" ToolTip="Remove selected dependencies">-</Button>
                     </StackPanel>
                 </DockPanel>
                 <ListView ItemsSource="{Binding Path=Project.EverestMetadata.Dependencies}" Grid.Row="3" Name="dependenciesListView"/>
@@ -100,23 +103,23 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Column="0" Grid.Row="0">Project Name:</TextBlock>
-                    <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=Project.ProjectName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=Project.ProjectName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="The name of your project. Also used for folder structure when packaging and as the name of your mod in the everest.yaml"/>
 
                     <TextBlock Grid.Column="0" Grid.Row="1">Version:</TextBlock>
                     <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
-                        <TextBox Text="{Binding Path=Project.EverestMetadata.ProjectMetadata.Version.Major, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="2,2" Width="30" VerticalContentAlignment="Center" HorizontalContentAlignment="Right"/>
-                        <TextBox Text="{Binding Path=Project.EverestMetadata.ProjectMetadata.Version.Minor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="2,2" Width="60" VerticalContentAlignment="Center" HorizontalContentAlignment="Right"/>
-                        <TextBox Text="{Binding Path=Project.EverestMetadata.ProjectMetadata.Version.Build, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="2,2" Width="60" VerticalContentAlignment="Center" HorizontalContentAlignment="Right"/>
+                        <TextBox Text="{Binding Path=Project.EverestMetadata.ProjectMetadata.Version.Major, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="2,2" Width="30" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" ToolTip="Major Version"/>
+                        <TextBox Text="{Binding Path=Project.EverestMetadata.ProjectMetadata.Version.Minor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="2,2" Width="60" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" ToolTip="Minor Version"/>
+                        <TextBox Text="{Binding Path=Project.EverestMetadata.ProjectMetadata.Version.Build, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="2,2" Width="60" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" ToolTip="Build Version"/>
                     </StackPanel>
 
                     <TextBlock Grid.Column="0" Grid.Row="2">Creator:</TextBlock>
-                    <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=Project.UserName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=Project.UserName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="Name of the author. Also used for folder structure when packaging"/>
 
                     <CheckBox Grid.Column="0" Grid.Row="3" HorizontalAlignment="Left" Width="90" VerticalAlignment="Center" IsChecked="{Binding Path=Project.IsCodeMod}" ToolTip="Check to make code mod">
                         <TextBlock>DLL</TextBlock>
                     </CheckBox>
-                    <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Path=Project.EverestMetadata.GlobalDLL, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding Path=Project.IsCodeMod}"/>
-                    <Button Grid.Column="0" Grid.Row="3" HorizontalAlignment="Right" Margin="10,1" FontSize="8" Padding="5,0" Width="80" Command="{Binding BrowseDLLCommand}">Browse</Button>
+                    <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Path=Project.EverestMetadata.GlobalDLL, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding Path=Project.IsCodeMod}" ToolTip="Path to the DLL file of your code mod"/>
+                    <Button Grid.Column="0" Grid.Row="3" HorizontalAlignment="Right" Margin="10,1" FontSize="8" Padding="5,0" Width="80" Command="{Binding BrowseDLLCommand}" ToolTip="Select your DLL in the file browser">Browse</Button>
 
                     <CheckBox Grid.Column="0" Grid.Row="4" HorizontalAlignment="Left" VerticalAlignment="Center" IsChecked="{Binding Path=Project.CreateEnglishTxt}" ToolTip="If checked, your project will come with an English.txt with the checkpoint names set up below.">
                         <TextBlock>Create English.txt</TextBlock>
@@ -131,26 +134,26 @@
                         <TextBlock HorizontalAlignment="Center" Margin="5">Campaign and Level Setup</TextBlock>
                         <StackPanel Orientation="Horizontal" Visibility="{Binding Path=EnglishTxtSetupVisibility}">
                             <TextBlock Height="20" Width="100" Text="Campaign Name "/>
-                            <TextBox Text="{Binding Project.CampaignName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+                            <TextBox Text="{Binding Project.CampaignName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" ToolTip="Campaign name in the dialog file"/>
                         </StackPanel>
                         <StackPanel Visibility="{Binding CheckpointSetupVisibility}">
                             <TextBlock HorizontalAlignment="Center" Margin="5">Level</TextBlock>
-                            <StackPanel Orientation="Horizontal">
+                            <StackPanel Orientation="Horizontal" ToolTip="Currently selected map file">
                                 <TextBlock Height="20" Text="Map File: "/>
                                 <TextBlock Text="{Binding SelectedMapName}"/>
                             </StackPanel>
                             <StackPanel>
-                                <StackPanel Orientation="Horizontal" Visibility="{Binding Path=EnglishTxtSetupVisibility}">
+                                <StackPanel Orientation="Horizontal" Visibility="{Binding Path=EnglishTxtSetupVisibility}" ToolTip="Level name in the dialog file">
                                     <TextBlock Height="20" Width="100" Text="Level Name "/>
                                     <TextBox Text="{Binding SelectedMap.LevelName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal" Visibility="{Binding Path=EnglishTxtSetupVisibility}">
-                                    <TextBlock Height="20" Width="100" Text="Poem"/>
+                                <StackPanel Orientation="Horizontal" Visibility="{Binding Path=EnglishTxtSetupVisibility}" ToolTip="The text used when you collect a crystal heart">
+                                    <TextBlock Height="20" Width="100" Text="Heart Poem"/>
                                     <TextBox Text="{Binding SelectedMap.Poem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal" Visibility="{Binding Path=PreviewImageSetupVisibility}">
-                                    <Button Margin="2" Grid.Row="1" Grid.Column="0" Command="{Binding SelectLevelPreviewImageCommand}">Preview Image</Button>
-                                    <TextBox Text="{Binding SelectedMap.PreviewImagePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False" Width="400"/>
+                                <StackPanel Orientation="Horizontal" Visibility="{Binding Path=PreviewImageSetupVisibility}" ToolTip="Path to the chapter's preview image">
+                                    <Button Margin="2" Grid.Row="1" Grid.Column="0" Command="{Binding SelectLevelPreviewImageCommand}" ToolTip="Select a path for the chapter's preview image">Preview Image</Button>
+                                    <TextBox Text="{Binding SelectedMap.PreviewImagePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="400"/>
                                 </StackPanel>
                                 <TextBlock Height="20" Text="Checkpoints"  HorizontalAlignment="Center" Margin="5"/>
                                 <ListView ItemsSource="{Binding Path=SelectedMap.Checkpoints}" HorizontalContentAlignment="Stretch">
